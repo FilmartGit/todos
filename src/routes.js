@@ -2,13 +2,15 @@ import { createBrowserRouter, createRoutesFromElements, Route } from 'react-rout
 import App from './App';
 import TodoList from './TodoList';
 import TodoAdd from './TodoAdd';
-import { addTodo, getTodos } from './api';
+import { actTodo, addTodo, getTodo, getTodos } from './api';
+import TodoDetail from './todoDetail';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path='/' element={<App />}>
-            <Route index={true} element={<TodoList />} loader={getTodos}/>
+            <Route index={true} element={<TodoList />} loader={getTodos} action={actTodo}/>
             <Route path="add" element={<TodoAdd />} action={addTodo}/>
+            <Route path=":key" element={<TodoDetail />} loader={getTodo}/>
         </Route>
     )
 );

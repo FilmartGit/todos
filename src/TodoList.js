@@ -1,29 +1,38 @@
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, Link, useSubmit } from "react-router-dom";
 
-export default function TodoList(){
-
+export default function TodoList() {
   const list = useLoaderData();
+  const submit = useSubmit();
+
+  const handleDoneClick = (key) => {
+    submit(null, { action: `/${key}`, method: "patch" });
+  };
+
+  const handleDeleteClick = (key) => {
+    submit(null, { action: `/${key}`, method: "delete" });
+  };
 
   return (
     <section>
       <table className="table is-hoverable is-fullwidth  mt-3">
-        <tbody 
-        >
+        <tbody>
           {
             // eslint-disable-next-line array-callback-return
             list.map((item) => {
               return (
-                <tr key={item.key} >
+                <tr key={item.key}>
                   <td>
-                    {item.done && <del>{item.title}</del>}
-                    {!item.done && item.title}
+                    <Link to={`/${item.key}`}>
+                      {item.done && <del>{item.title}</del>}
+                      {!item.done && item.title}
+                    </Link>
                   </td>
                   <td>
                     <button
                       className="button is-success"
                       title="Выполнено"
                       disabled={item.done}
-                       
+                      onClick={() => {handleDoneClick(item.key)}}
                     >
                       &#9745;
                     </button>
@@ -32,7 +41,7 @@ export default function TodoList(){
                     <button
                       className="button is-danger"
                       title="Удалить"
-                       
+                      onClick={() => {handleDeleteClick(item.key)}}
                     >
                       &#9746;
                     </button>
