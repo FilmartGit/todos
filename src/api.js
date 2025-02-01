@@ -1,8 +1,41 @@
+import {getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut} from 'firebase/auth';
+import firebase from './firebase.js';
 import { redirect } from 'react-router-dom';
 import todos from './todos';
 
 export function getTodos(){
     return todos;
+}
+
+const auth = getAuth(firebase);
+
+export async function login({request}){
+    const fd = await request.formData();
+    try {
+        const oUC = await signInWithEmailAndPassword(auth, fd.get('email'), fd.get('password'));
+        return redirect('/');
+    } catch (e){
+        return e.code;
+    }
+}
+
+export async function logOut(){
+    await signOut(auth);
+    return redirect('/login');
+}
+
+export async function register({request}) {
+    const fd = await request.formData();
+    try {
+        const oUC = await createUserWithEmailAndPassword(auth, fd.get('email'), fd.get('password'));
+        return redirect('/');
+    } catch (e) {
+        return e.code;
+    }
+}
+
+export function setStateChangeHandler(func){
+    return onAuthStateChanged(auth, func);
 }
 
 export async function addTodo({request}){
@@ -39,3 +72,4 @@ export function actTodo({params, request}){
     }
     return redirect('/');
 }
+
